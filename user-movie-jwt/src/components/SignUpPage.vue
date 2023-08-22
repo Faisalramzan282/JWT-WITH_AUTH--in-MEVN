@@ -24,6 +24,10 @@ export default {
         SaveData(){
             // console.log("form is==>", this.form);
             this.registerUser(this.form);
+            //for again empty input-fields
+            this.form.username = '';
+            this.form.email = '';
+            this.form.password = '';
         }
     }
 }

@@ -9,17 +9,15 @@ const getById = async (req, res, next) => {
   }
 };
 
-const getAll = async (req, res, next) => {
+const getAll = async (req, res) => {
+ console.log("request in get API===> ",  req);
+ console.log("request in get API===> ",  res);
   try {
-    const movies = await movieModel.find({});
-    const moviesList = movies.map(movie => ({
-      id: movie._id,
-      name: movie.name,
-      released_on: movie.released_on
-    }));
-    res.json({ status: "success", message: "Movies list found!!!", data: { movies: moviesList } });
+    const allMovies = await movieModel.find(); // Assuming find() fetches all movies
+    res.json(allMovies); // Send the movies data as JSON response
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
@@ -43,7 +41,8 @@ const deleteById = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   try {
-    await movieModel.create({ name: req.body.name, released_on: req.body.released_on });
+    const response = await movieModel.create({movieName: req.body.movieName, releaseDate: req.body.releaseDate });
+    // console.log("Schema created in seerver==>", response);
     res.json({ status: "success", message: "Movie added successfully!!!", data: null });
   } catch (error) {
     next(error);

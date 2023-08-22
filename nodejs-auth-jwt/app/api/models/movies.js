@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 //Define a schema
 const Schema = mongoose.Schema;
 const MovieSchema = new Schema({
- name: {
+  movieName: {
   type: String,
   trim: true,  
   required: true,
  },
- released_on: {
+  releaseDate: {
   type: Date,
   trim: true,
   required: true

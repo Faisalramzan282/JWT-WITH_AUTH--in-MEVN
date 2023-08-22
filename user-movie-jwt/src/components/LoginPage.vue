@@ -7,7 +7,7 @@
       </div>
 </template>
 <script>
-// import { mapActions } from 'vuex';
+import { mapActions } from 'vuex';
 export default {
     name: "LoginPage",
     data(){
@@ -20,10 +20,11 @@ export default {
         }
     },
     methods:{
-        // ...mapActions({registerUser: 'registerUser'}), 
+        ...mapActions({authenticateUser: 'authenticateUser'}), 
         SaveData(){
             // console.log("form is==>", this.form);
-            // this.registerUser(this.form);
+            this.authenticateUser(this.form);
+            this.$router.push('/movies');
         }
     }
 }
