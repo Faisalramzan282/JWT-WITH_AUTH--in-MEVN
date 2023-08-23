@@ -8,8 +8,9 @@ export default createStore({
       users: [],
       tokens: '',
       errors: [],
+     
     },
-    MoviesData: {}
+    moviesArray: [],
   },
   mutations: {
     SET_WEB_TOKENS(state, payload)
@@ -19,8 +20,12 @@ export default createStore({
       state.user.tokens = payload
     }, 
     SET_MOVIE_LIST(state, payload){
-      state.MoviesData = payload;
-      console.log("movies are cooming in mutations ==>", state.MoviesData);
+      state.moviesArray = payload;
+      // console.log("payload in mutations is ==>", payload);
+      console.log("movies are cooming in mutations ==>", state.moviesArray);
+      // payload.forEach((movie, index) => {
+      //   console.log(`Movie at index ${index}:`, movie.movieName, movie.releaseDate);
+      // });
     }
   },
   actions: {
@@ -66,7 +71,7 @@ export default createStore({
     async getMovies({ commit }) {
       try {
         const token = this.state.user.tokens;
-        console.log('token in the fetch----> ', token)
+        // console.log('token in the fetch----> ', token)
         const config = {
           headers: {
             'x-access-token': token,
@@ -84,7 +89,8 @@ export default createStore({
   },
   getters: {
     getMovies_Data(state){
-      return state.MoviesData;
-    }
+      console.log("Moviess in geeter==>",state.moviesArray);
+      return state.moviesArray;
+    }, 
   },
 })

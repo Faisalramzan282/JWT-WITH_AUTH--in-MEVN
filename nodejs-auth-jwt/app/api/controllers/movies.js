@@ -10,13 +10,13 @@ const getById = async (req, res, next) => {
 };
 
 const getAll = async (req, res) => {
- console.log("request in get API===> ",  req);
- console.log("request in get API===> ",  res);
+ console.log("request in getMovies API ====> ",  req);
+ console.log("request in getMovies API ====> ",  res);
   try {
     const allMovies = await movieModel.find(); // Assuming find() fetches all movies
     res.json(allMovies); // Send the movies data as JSON response
   } catch (error) {
-    console.error(error);
+    console.error("errro in get Movies==>", error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
