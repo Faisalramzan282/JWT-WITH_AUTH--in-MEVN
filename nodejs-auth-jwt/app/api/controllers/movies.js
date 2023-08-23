@@ -23,8 +23,13 @@ const getAll = async (req, res) => {
 
 const updateById = async (req, res, next) => {
   try {
-    await movieModel.findByIdAndUpdate(req.params.movieId, { name: req.body.name });
-    res.json({ status: "success", message: "Movie updated successfully!!!", data: null });
+    console.log("Movie Upation in server", req);
+    // console.log("Movie Upation in server", req.body.name);
+    await movieModel.findByIdAndUpdate(req.params.movieId, {
+      movieName: req.body.movieName,
+      releaseDate: req.body.releaseDate
+    });
+   res.json({ status: "success", message: "Movie updated successfully!!!", data: null });
   } catch (error) {
     next(error);
   }
@@ -32,6 +37,7 @@ const updateById = async (req, res, next) => {
 
 const deleteById = async (req, res, next) => {
   try {
+    console.log("Deleting iD is ===>", req.params.movieId);
     await movieModel.findByIdAndRemove(req.params.movieId);
     res.json({ status: "success", message: "Movie deleted successfully!!!", data: null });
   } catch (error) {

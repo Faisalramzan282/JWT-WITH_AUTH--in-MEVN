@@ -13,17 +13,20 @@
     </div>
     <button @click="SaveData" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Login</button>
     <button @click="GosignUp" class="w-full bg-blue-500 mt-4 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Register</button>
-
+   
   </div>
 </div>
 
 </template>
+
 <script>
 import { mapActions } from 'vuex';
 export default {
     name: "LoginPage",
+    
     data(){
         return{
+         
             form:{
                 username: '',
                 email: '',
@@ -36,12 +39,12 @@ export default {
         async SaveData(){
             // console.log("form is==>", this.form);
           await  this.authenticateUser(this.form);
-        
             this.$router.push('/movies');
         }, 
         GosignUp(){
             this.$router.push('/');
-        }
+        },
+    
     }
 }
 </script>

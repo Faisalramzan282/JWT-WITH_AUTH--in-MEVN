@@ -1,6 +1,5 @@
 import { createStore } from 'vuex'
 import axios from 'axios'
-import router from '@/router';
 export default createStore({
   state: {
     user:{
@@ -22,11 +21,33 @@ export default createStore({
     SET_MOVIE_LIST(state, payload){
       state.moviesArray = payload;
       // console.log("payload in mutations is ==>", payload);
-      console.log("movies are cooming in mutations ==>", state.moviesArray);
+      // console.log("movies are cooming in mutations ==>", state.moviesArray);
       // payload.forEach((movie, index) => {
       //   console.log(`Movie at index ${index}:`, movie.movieName, movie.releaseDate);
       // });
-    }
+    }, 
+    DELETE_MOVIES(state, payload){
+      const index = state.moviesArray.findIndex(m => m._id === payload._id);
+      // console.log("index is ===> mutation", index)
+      // console.log("paylod id==>", payload._id);
+      // console.log("id in movies==>", index);
+     if (index !== -1) {
+      state.moviesArray.splice(index, 1);
+     }
+      // state.moviesArray.filter((item)=>item._id !== payload._id);
+     },
+     UPDATE_MOVIE(state, payload){
+      // console.log("payload in mutation is",  payload)
+      const {id, movieName, releaseDate} = payload;
+      // console.log(id, movieName);
+      //index for changing movie Data
+      const movieIndex = state.moviesArray.findIndex((item)=>item._id == id);
+      if(movieIndex !== -1)
+      {
+        state.moviesArray[movieIndex].movieName = movieName;
+        state.moviesArray[movieIndex].releaseDate = releaseDate;
+      }
+     }
   },
   actions: {
     async registerUser(_, payload){
@@ -61,11 +82,12 @@ export default createStore({
         },
       };
       //post request (URL, data, config);
-      const response = await axios.post('/movies', payload, config); 
-      console.log("payload moviesCreation in actions==>", response.data);
-      if (this.state.user.tokens !== '') {
-        router.push('/movies');
-      }
+       await axios.post('/movies', payload, config); 
+       
+      // console.log("payload moviesCreation in actions==>", response.data);
+      // if (this.state.user.tokens !== '') {
+      //   router.push('/movies');
+      // }
     },
     //getting movies from the API 
     async getMovies({ commit }) {
@@ -79,17 +101,50 @@ export default createStore({
           }
         };
         const { data } = await axios.get('/movies',config);
-        console.log("data in Movies related", data)
+        // console.log("data in Movies related", data)
         commit('SET_MOVIE_LIST', data);
       } catch (error) {
         console.error('Error fetching movies:', error);
       }
     },
-   
+    //delete the movies by id
+    async deleteMov({commit},payload){
+      const token = this.state.user.tokens;
+      const config = {
+        headers: {
+          'x-access-token': token,
+          'Content-Type': 'application/json'
+        }
+      };
+      // console.log("config folder is ==>", config);
+    // console.log("payload id in action is ==>", payload._id);
+    const data = await axios.delete(`/movies/${payload._id}`, config);
+    console.log("response in action is ===>", data);
+    commit("DELETE_MOVIES", payload);
+    },
+    async moviesUpdation({commit},payload){
+    //  console.log("payload in updateion store action==>", payload);
+    const token = this.state.user.tokens;
+      const config = {
+        headers: {
+          'x-access-token': token,
+          'Content-Type': 'application/json'
+        }
+      };
+     try{
+      await axios.patch(`/movies/${payload.id}`,payload, config);
+      // console.log('data in payload is ==>', res);
+      commit("UPDATE_MOVIE", payload);
+    }catch(error){
+      console.log("error in patch actions is ==>", error);
+    }
+     
+    }
+    
   },
   getters: {
     getMovies_Data(state){
-      console.log("Moviess in geeter==>",state.moviesArray);
+      // console.log("Moviess in geeter==>",state.moviesArray);
       return state.moviesArray;
     }, 
   },

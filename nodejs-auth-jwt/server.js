@@ -38,11 +38,11 @@ app.get('/favicon.ico', function(req, res) {
     res.sendStatus(204);
 });
 function validateUser(req, res, next){
-  console.log("access-Token in movies server ==>", req.headers['x-access-token']);   //for accessing tokens in the front-end validation
+  // console.log("access-Token in movies server ==>", req.headers['x-access-token']);   //for accessing tokens in the front-end validation
   // console.log("respond in movies server==>", res)
-  console.log(" keysecret in movies server ==>",req.app.get('secretKey')); 
+  // console.log(" keysecret in movies server ==>",req.app.get('secretKey')); 
   // console.log("JWT is ==>", jwt);
-  console.log("Schema created in seerver==>", req.body.movieName, req.body.releaseDate);
+  // console.log("Schema created in seerver==>", req.body.movieName, req.body.releaseDate);
 
   jwt.verify(req.headers['x-access-token'], req.app.get('secretKey'), function(err, decoded) {
     if (err) {
