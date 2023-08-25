@@ -5,9 +5,9 @@ export default createStore({
     user:{
       //for resitering the user when logged In
       users: [],
-      tokens: '',
-      errors: [],
-     
+      tokens: '',  //tokens generating jwt came here 
+      errors: [],   
+      userPassword: null
     },
     moviesArray: [],
   },
@@ -47,15 +47,30 @@ export default createStore({
         state.moviesArray[movieIndex].movieName = movieName;
         state.moviesArray[movieIndex].releaseDate = releaseDate;
       }
+     },
+     UPDATE_PASS(state, payload)
+     {
+      state.user.userPassword = payload;
+      // console.log("password upation in mutation is==>", state.user.usersPassword);
+     },
+     SET_USER(state, payload)
+     {
+      state.user.users = payload;
+      // console.log("payload in coomit mutation is ==>", payload);
+      // console.log("users array is in store====>",state.user.users);
      }
   },
   actions: {
-    async registerUser(_, payload){
+    async registerUser({commit}, payload){
+      // console.log("payload in registered user is  ==>", payload);
+      
       try {
         const response = await axios.post('/users/register', payload);
 
         if (response.status === 201) {
             console.log("User registered successfully");
+            // console.log("user Array is ==>", this.state.user.users);
+            commit("SET_USER", payload);
         } else if (response.status === 400) {
             const validationErrors = response.data.errors;
             validationErrors.forEach(error => {
@@ -67,10 +82,12 @@ export default createStore({
     }
     },
     async authenticateUser({commit}, payload){
-      const response =await axios.post('/users/authenticate', payload);
+      const {data} =await axios.post('/users/authenticate', payload);
       //for generating tokens here
-      // console.log("payload authentication token in actions==>", response.data.data.token);
-      commit("SET_WEB_TOKENS", response.data.data.token)
+      // console.log("payload authentication token in actions tokens==>", data.data.token);
+      commit("SET_WEB_TOKENS", data.data.token); //for web tokens
+      // console.log("response in authentication is ===>", data.data.user._id); //for upation of password , push whole data object
+       commit("UPDATE_PASS", data);
     },
     async moviesCreation(_, payload) {
       const token = this.state.user.tokens;
@@ -139,8 +156,29 @@ export default createStore({
       console.log("error in patch actions is ==>", error);
     }
      
+    },
+    //Now updation of password of user
+    async updatepassword(_, payload)
+    {
+      console.log("payload in actions", payload)
+      // console.log("id of updated password is ==>", this.state.user.usersPassword.data.user._id) // accessing id of logged In user 
+      try{
+        const response = await axios.patch(`/users/register/${this.state.user.userPassword.data.user._id}`, payload);
+        console.log('response of passsword in action is ==>', response);
+      }catch(error){
+        console.log("error in patch actions is ==>", error);
+      }
+    },
+    //Now delete the current user 
+    async delete_User()
+    {
+      // console.log("payload ===> delete user==>", payload);
+      // console.log("user array in store delete_user action ", this.state.user.users);
+      // console.log("Password in delete_user action is ==>", this.state.user.userPassword.data.user._id);
+      const curr_U_ID = this.state.user.userPassword.data.user._id;
+      await axios.delete(`/users/register/${curr_U_ID}`);
+      // console.log("response in the delete-User", response);
     }
-    
   },
   getters: {
     getMovies_Data(state){

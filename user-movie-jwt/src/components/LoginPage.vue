@@ -11,8 +11,9 @@
     <div class="mb-4">
       <input type="password" v-model="form.password" class="w-full p-2 border rounded-md focus:outline-none focus:border-blue-400" placeholder="Enter Password">
     </div>
-    <button @click="SaveData" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Login</button>
-    <button @click="GosignUp" class="w-full bg-blue-500 mt-4 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Register</button>
+    
+    <button @click="saveData" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Login</button>
+    <button @click="gosignUp" class="w-full bg-blue-500 mt-4 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Register</button>
    
   </div>
 </div>
@@ -23,28 +24,27 @@
 import { mapActions } from 'vuex';
 export default {
     name: "LoginPage",
-    
     data(){
         return{
-         
             form:{
                 username: '',
                 email: '',
-                password: ''
+                password: '',
+                
             }
         }
     },
     methods:{
         ...mapActions({authenticateUser: 'authenticateUser'}), 
-        async SaveData(){
-            // console.log("form is==>", this.form);
+        async saveData(){
+            console.log("form is==>", this.form);
+            //for authentication of user
           await  this.authenticateUser(this.form);
-            this.$router.push('/movies');
+          this.$router.push('/movies');
         }, 
-        GosignUp(){
+        gosignUp(){
             this.$router.push('/');
         },
-    
     }
 }
 </script>

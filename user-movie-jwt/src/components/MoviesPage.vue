@@ -2,10 +2,11 @@
   <div class="min-h-screen bg-gray-100">
   <!-- Navigation Bar -->
   <nav class="bg-blue-500 p-4">
-    <div class="container mx-auto flex justify-between items-center">
+    <div class="container mx-auto flex justify-evenly items-center">
       <button @click="loginpge" class="text-white">Login</button>
-      <button @click="showPopup" class="text-white p-2 rounded-md hover:bg-stone-500 ">Update Password</button>
-      <UpdatePassword  v-if="isPopupVisible" @close="closePopup" />
+      <button @click="isPasswordPopUp = true" class="text-white p-2 rounded-md hover:bg-stone-500 ">Update Profile</button>
+      <UpdatePassword  v-show="isPasswordPopUp" @close="isPasswordPopUp = false" />
+      <button @click="del_user" class="text-white">Delete User</button>
       <input
         type="text"
         class="w-64 px-2 py-1 border rounded focus:outline-none focus:border-blue-300"
@@ -58,7 +59,7 @@
         
         <!-- Buttons Wrapper -->
         <div class="mt-4">
-          <button @click="showPopup(movie)" class="p-2 bg-slate-300 text-white rounded-md hover:bg-blue-600 focus:outline-none">Edit</button>
+          <button @click="showEditMoviesPopup(movie)" class="p-2 bg-slate-300 text-white rounded-md hover:bg-blue-600 focus:outline-none">Edit</button>
            <!-- Edit Button PopUp -->
         <EditMoviesPopUp  v-if="isPopupVisible" :movieDetail = 'selectedMovie' @close="closePopup" />
         <button @click="deleteMovie(movie)" class="p-2 bg-slate-300 text-white rounded-md bg-red-400 focus:outline-none">Delete</button>
@@ -86,6 +87,7 @@ export default {
   },
   data() {
     return {
+     isPasswordPopUp : false,
      isPopupVisible : false,
      selectedMovie: null,  //sending movie detail in pop-up
       moviesData: {
@@ -98,7 +100,7 @@ export default {
     ...mapGetters({fetchMovies: "getMovies_Data"}),
   },
   methods: {
-    ...mapActions({ moviesCreation: "moviesCreation", getMovies: "getMovies", deleteMov: "deleteMov" }),
+    ...mapActions({ moviesCreation: "moviesCreation", getMovies: "getMovies", deleteMov: "deleteMov", delete_User: "delete_User"}),
     //for getting the movies of all lists
     async submitForm() {
       await this.moviesCreation(this.moviesData);
@@ -114,14 +116,18 @@ export default {
         this.deleteMov(movie)
     },
     //for updation of password
-    showPopup(movie) {
+    showEditMoviesPopup(movie) {
         // console.log("Movies in the page==?", movie)
         this.selectedMovie = movie;
         this.isPopupVisible = true;
       },
       closePopup() {
       this.isPopupVisible = false;
-       }
+       },
+      async del_user(){
+        await this.delete_User();
+        this.$router.push({name: 'login'});
+      }
       
   },
   
