@@ -23,4 +23,6 @@ router.post('/authenticate', userController.authenticate);
 // router.get('/authenticate', userController.getAuthenticate)
 router.patch('/register/:userId', userController.updatePasswordById);
 router.delete('/register/:userId', userController.deleteUserById)
+// user role authentication
+router.patch('/role/:userId', userController.updateRoles);
 module.exports = router;

@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import axios from 'axios'
+import router from '@/router';
 export default createStore({
   state: {
     user:{
@@ -7,9 +8,14 @@ export default createStore({
       users: [],
       tokens: '',  //tokens generating jwt came here 
       errors: [],   
-      userPassword: null
+      userPassword: null,
+      roles_Store : 'user',
+      userTicketsMsg : null
     },
     moviesArray: [],
+    admin : {
+      all_User : []
+    }
   },
   mutations: {
     SET_WEB_TOKENS(state, payload)
@@ -58,6 +64,21 @@ export default createStore({
       state.user.users = payload;
       // console.log("payload in coomit mutation is ==>", payload);
       // console.log("users array is in store====>",state.user.users);
+     }, 
+     SET_ROLES(state, payload)
+     {
+      state.user.roles_Store = payload;
+      console.log("roles in store mutation ", state.user.roles_Store )
+     }, 
+     SET_ADMIN_PANNEL_USER(state, payload)
+     {
+       state.admin.all_User.push(payload);
+      //  console.log("all user fetched succesffuly ==>", state.admin.all_User);
+     },
+     SET_USER_MESSAGE_TICKETS(state, payload)
+     {
+      state.user.userTicketsMsg = payload;
+      // console.log("message in mutations of user tickets ==>", state.user.userTicketsMsg);
      }
   },
   actions: {
@@ -82,16 +103,36 @@ export default createStore({
     }
     },
     async authenticateUser({commit}, payload){
-      const {data} =await axios.post('/users/authenticate', payload);
-      //for generating tokens here
-      // console.log("payload authentication token in actions tokens==>", data.data.token);
-      commit("SET_WEB_TOKENS", data.data.token); //for web tokens
-      // console.log("response in authentication is ===>", data.data.user._id); //for upation of password , push whole data object
-       commit("UPDATE_PASS", data);
+      // const token = this.state.user.tokens;
+      // console.log("tokens in action is ==>", token);username
+      // console.log("payload in authenticate ==>", payload);
+      // this.state.user.users.push(payload);  //for storing data of users login 
+      try{
+        const {data} =await axios.post('/users/authenticate', payload);
+        //for generating tokens here
+        // console.log("user role is ==>", this.state.user.roles_Store);
+        // console.log("users data is ===>", data.data.user.role);
+        commit("SET_WEB_TOKENS", data.data.token); //for web tokens
+        // console.log("response in authentication is ===>", data.data.user._id); //for upation of password , push whole data object
+         commit("UPDATE_PASS", data);
+         //for adjusting role-based authentication
+         if (data.data.user.role === 'user') {
+          // console.log("inside user role");
+          router.push({ name: 'user' }); 
+        } else if (data.data.user.role === 'admin') {
+          // console.log("inside admin role");
+          router.push({ name: 'movies' }); 
+        }
+      }
+      catch(error){
+        console.log("error is ===>", error);
+      }
+      
     },
     async moviesCreation(_, payload) {
       const token = this.state.user.tokens;
-      console.log("tokens in action is ==>", token);
+      // console.log("tokens in action is ==>", token);
+      // console.log("payload in action state is ===>", payload);
       const config = {
         headers: {
           'x-access-token': token,
@@ -178,12 +219,53 @@ export default createStore({
       const curr_U_ID = this.state.user.userPassword.data.user._id;
       await axios.delete(`/users/register/${curr_U_ID}`);
       // console.log("response in the delete-User", response);
-    }
+    },
+    async role_selection(_,payload){
+    console.log("payload n action is ", payload);
+    // console.log("user state is ==>", this.state.user.users[0].email);
+    const response  = await axios.patch(`/users/role/${payload.id}`,payload);
+    console.log("Response in action role-selection is", response);
+    // console.log("roles in action is ==>",response.data.role )
+    // commit("SET_ROLES", response.data.role);
+  },
+  // for admin pannel data--->
+  async fetchAllUsers({commit})
+    {
+      const {data} = await axios.get('/users/register');
+      console.log("response is action ===>", data.data);
+      commit("SET_ADMIN_PANNEL_USER", data.data);
+    }, 
+  async create_user_cart_info({commit}, payload)
+  {
+    // console.log("payload in action ", payload);
+    // console.log("web tokens in creat user info section is ==>", this.state.user.tokens);
+    const token = this.state.user.tokens;
+    const config = {
+      headers: {
+        'x-access-token': token,
+        'Content-type': 'application/json',
+      },
+    };
+    const {data} = await axios.post(`/userCarts`, payload, config);
+    console.log("data in action cart view of user", data.message);
+    commit("SET_USER_MESSAGE_TICKETS", data.message);
+  }
   },
   getters: {
     getMovies_Data(state){
       // console.log("Moviess in geeter==>",state.moviesArray);
       return state.moviesArray;
     }, 
+    get_user_admin_pannel(state)
+    {
+      return state.admin.all_User;
+    }, 
+    // getUserTicketsMsg(state)
+    // {
+    //   console.log("hello==>")
+    //   console.log("user tickets msge in getters===>", state.user.userTicketsMsg);
+    //   return state.user.userTicketsMsg;
+    // }
   },
+ 
 })

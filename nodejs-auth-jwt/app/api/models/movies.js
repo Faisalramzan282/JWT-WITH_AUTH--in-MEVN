@@ -11,6 +11,11 @@ const MovieSchema = new Schema({
   type: Date,
   trim: true,
   required: true
- }
+ },
+ tickets:{
+  type: Number,
+  required: true, 
+  min : 1
+}
 });
 module.exports = mongoose.model('Movie', MovieSchema)

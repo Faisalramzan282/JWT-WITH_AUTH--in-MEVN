@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-100">
+  <div class="bg-gray-100">
   <!-- Navigation Bar -->
   <nav class="bg-blue-500 p-4">
     <div class="container mx-auto flex justify-evenly items-center">
@@ -14,7 +14,10 @@
       />
     </div>
   </nav>
-
+   <!-- Roles whaether of admin , user, moderator -->
+   <div>
+      <router-link to="/adminPannel">Update Roles</router-link>
+   </div>
   <!-- Movie Form -->
   <div class="container mx-auto p-8">
     <form @submit.prevent="submitForm" class="max-w-md mx-auto bg-white rounded shadow p-6">
@@ -37,7 +40,14 @@
         class="w-full p-2 border rounded focus:outline-none focus:border-blue-400"
       />
       <br />
-
+      <label for="movieTickets" class="block font-semibold mb-2">Total Tickets</label>
+      <input
+        type="number"
+        id="movieTickets"
+        v-model="moviesData.tickets"
+        required
+        class="w-full p-2 border rounded focus:outline-none focus:border-blue-400"
+      />
       <button  type="submit" class="mt-4 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Submit</button>
     </form>
   </div>
@@ -55,7 +65,7 @@
         <img src="../assets/moviesImg.jpg" alt="movie-Image">
         <h2 class="text-xl font-semibold">Movie Name: {{ movie.movieName }}</h2>
         <p class="text-gray-600">Release Date: {{ movie.releaseDate }}</p>
-        
+        <p>Available tickets: {{ movie.tickets }}</p>
         
         <!-- Buttons Wrapper -->
         <div class="mt-4">
@@ -93,18 +103,22 @@ export default {
       moviesData: {
         movieName: "",
         releaseDate: "",
+        tickets: null
       },
+      // selectedRole: ''
     };
   },
   computed: {
     ...mapGetters({fetchMovies: "getMovies_Data"}),
   },
   methods: {
-    ...mapActions({ moviesCreation: "moviesCreation", getMovies: "getMovies", deleteMov: "deleteMov", delete_User: "delete_User"}),
+    ...mapActions({ moviesCreation: "moviesCreation", getMovies: "getMovies", deleteMov: "deleteMov", delete_User: "delete_User", role_selection : "role_selection"}),
     //for getting the movies of all lists
     async submitForm() {
+      // console.log("movies creation payload in component===>", this.moviesData);
+
       await this.moviesCreation(this.moviesData);
-      // Fetch the movies after creation
+      // // Fetch the movies after creation
       this.getMovies(); 
     },
     loginpge(){
@@ -127,7 +141,12 @@ export default {
       async del_user(){
         await this.delete_User();
         this.$router.push({name: 'login'});
-      }
+      }, 
+      // async submitRoleForm(){
+      //  await  this.role_selection(this.selectedRole);
+      //   //  console.log("selected role is ===>", this.selectedRole);
+      //   this.selectedRole = ''
+      // }
       
   },
   

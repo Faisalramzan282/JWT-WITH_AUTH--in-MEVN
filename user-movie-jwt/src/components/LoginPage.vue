@@ -37,10 +37,10 @@ export default {
     methods:{
         ...mapActions({authenticateUser: 'authenticateUser'}), 
         async saveData(){
-            console.log("form is==>", this.form);
+            // console.log("form is==>", this.form);
             //for authentication of user
           await  this.authenticateUser(this.form);
-          this.$router.push('/movies');
+          // this.$router.push({name : 'movies'});
         }, 
         gosignUp(){
             this.$router.push('/');

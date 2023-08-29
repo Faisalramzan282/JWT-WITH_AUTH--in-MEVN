@@ -3,6 +3,7 @@ const logger = require('morgan');
 const cors = require('cors');
 const movies = require('./routes/movies') ;
 const users = require('./routes/users');
+const userCartView = require('./routes/userCartView');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose'); //database configuration
 var jwt = require('jsonwebtoken');
@@ -10,7 +11,11 @@ const app = express();
 const port = process.env.PORT || 3000; 
 app.set('secretKey', 'nodeRestApi'); // jwt secret token
 require('dotenv').config(); //for accessing env files 
-
+//for configure the userCart, product cart comming in local Storage 
+const fs = require('fs');
+const path = require('path');
+const PRODUCT_DATA_FILE = path.join(__dirname, 'server-product-data.json');
+const CART_DATA_FILE = path.join(__dirname, 'server-cart-data.json');
 
 //for successful connection 
 mongoose
@@ -34,6 +39,7 @@ res.json({"tutorial" : "Build REST API with node.js"});
 app.use('/users', users);
 // private route
 app.use('/movies', validateUser, movies);
+app.use('/userCarts',validateUser, userCartView);
 app.get('/favicon.ico', function(req, res) {
     res.sendStatus(204);
 });
@@ -55,7 +61,6 @@ function validateUser(req, res, next){
   });
   
 }
-
 app.use(function(req, res, next) {
  let err = new Error('Not Foundssssss');
     err.status = 404;
