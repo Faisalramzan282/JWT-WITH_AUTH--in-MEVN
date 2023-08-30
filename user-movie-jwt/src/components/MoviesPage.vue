@@ -13,7 +13,7 @@
         placeholder="Search movies"
       />
     </div>
-  </nav>
+  </nav>https://github.com/Faisalramzan282/JWT-Basic-SetUp.git
    <!-- Roles whaether of admin  -->
    <div class="m-5">
       <router-link to="/adminPannel" class="p-4 bg-gray-500	rounded">Update Roles</router-link>
