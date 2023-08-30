@@ -1,6 +1,7 @@
 import { createStore } from 'vuex'
 import axios from 'axios'
 import router from '@/router';
+// let cartItems = localStorage.getItem('cartItems');
 export default createStore({
   state: {
     user:{
@@ -10,7 +11,7 @@ export default createStore({
       errors: [],   
       userPassword: null,
       roles_Store : 'user',
-      userTicketsMsg : null
+      // userCarts : []
     },
     moviesArray: [],
     admin : {
@@ -75,11 +76,7 @@ export default createStore({
        state.admin.all_User.push(payload);
       //  console.log("all user fetched succesffuly ==>", state.admin.all_User);
      },
-     SET_USER_MESSAGE_TICKETS(state, payload)
-     {
-      state.user.userTicketsMsg = payload;
-      // console.log("message in mutations of user tickets ==>", state.user.userTicketsMsg);
-     }
+    
   },
   actions: {
     async registerUser({commit}, payload){
@@ -103,10 +100,6 @@ export default createStore({
     }
     },
     async authenticateUser({commit}, payload){
-      // const token = this.state.user.tokens;
-      // console.log("tokens in action is ==>", token);username
-      // console.log("payload in authenticate ==>", payload);
-      // this.state.user.users.push(payload);  //for storing data of users login 
       try{
         const {data} =await axios.post('/users/authenticate', payload);
         //for generating tokens here
@@ -131,8 +124,6 @@ export default createStore({
     },
     async moviesCreation(_, payload) {
       const token = this.state.user.tokens;
-      // console.log("tokens in action is ==>", token);
-      // console.log("payload in action state is ===>", payload);
       const config = {
         headers: {
           'x-access-token': token,
@@ -141,11 +132,6 @@ export default createStore({
       };
       //post request (URL, data, config);
        await axios.post('/movies', payload, config); 
-       
-      // console.log("payload moviesCreation in actions==>", response.data);
-      // if (this.state.user.tokens !== '') {
-      //   router.push('/movies');
-      // }
     },
     //getting movies from the API 
     async getMovies({ commit }) {
@@ -174,14 +160,11 @@ export default createStore({
           'Content-Type': 'application/json'
         }
       };
-      // console.log("config folder is ==>", config);
-    // console.log("payload id in action is ==>", payload._id);
     const data = await axios.delete(`/movies/${payload._id}`, config);
     console.log("response in action is ===>", data);
     commit("DELETE_MOVIES", payload);
     },
     async moviesUpdation({commit},payload){
-    //  console.log("payload in updateion store action==>", payload);
     const token = this.state.user.tokens;
       const config = {
         headers: {
@@ -191,7 +174,6 @@ export default createStore({
       };
      try{
       await axios.patch(`/movies/${payload.id}`,payload, config);
-      // console.log('data in payload is ==>', res);
       commit("UPDATE_MOVIE", payload);
     }catch(error){
       console.log("error in patch actions is ==>", error);
@@ -201,8 +183,6 @@ export default createStore({
     //Now updation of password of user
     async updatepassword(_, payload)
     {
-      console.log("payload in actions", payload)
-      // console.log("id of updated password is ==>", this.state.user.usersPassword.data.user._id) // accessing id of logged In user 
       try{
         const response = await axios.patch(`/users/register/${this.state.user.userPassword.data.user._id}`, payload);
         console.log('response of passsword in action is ==>', response);
@@ -213,20 +193,12 @@ export default createStore({
     //Now delete the current user 
     async delete_User()
     {
-      // console.log("payload ===> delete user==>", payload);
-      // console.log("user array in store delete_user action ", this.state.user.users);
-      // console.log("Password in delete_user action is ==>", this.state.user.userPassword.data.user._id);
       const curr_U_ID = this.state.user.userPassword.data.user._id;
       await axios.delete(`/users/register/${curr_U_ID}`);
-      // console.log("response in the delete-User", response);
     },
     async role_selection(_,payload){
-    console.log("payload n action is ", payload);
-    // console.log("user state is ==>", this.state.user.users[0].email);
     const response  = await axios.patch(`/users/role/${payload.id}`,payload);
     console.log("Response in action role-selection is", response);
-    // console.log("roles in action is ==>",response.data.role )
-    // commit("SET_ROLES", response.data.role);
   },
   // for admin pannel data--->
   async fetchAllUsers({commit})
@@ -235,37 +207,38 @@ export default createStore({
       console.log("response is action ===>", data.data);
       commit("SET_ADMIN_PANNEL_USER", data.data);
     }, 
-  async create_user_cart_info({commit}, payload)
+  create_user_cart_info(_, payload)
   {
-    // console.log("payload in action ", payload);
-    // console.log("web tokens in creat user info section is ==>", this.state.user.tokens);
-    const token = this.state.user.tokens;
-    const config = {
-      headers: {
-        'x-access-token': token,
-        'Content-type': 'application/json',
-      },
-    };
-    const {data} = await axios.post(`/userCarts`, payload, config);
-    console.log("data in action cart view of user", data.message);
-    commit("SET_USER_MESSAGE_TICKETS", data.message);
+    if(payload.tickets>=payload.userTickets)  //means admin tickets are available
+    {
+      let cartItems = JSON.parse(localStorage.getItem('cartItems'));
+      let indexExist= cartItems.findIndex(obj=>obj._id === payload._id);
+      if(indexExist !== -1){
+        cartItems[indexExist].userTickets += payload.userTickets;
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+      // console.log("cartitem from local Storage is ==>", cartItems)
+      //push into global state
+      // this.state.user.userCarts.push(cartItems)
+      // console.log("array of global state in action is ==>", this.state.user.userCarts);
+    }
+      else{
+        cartItems.push(payload);
+       localStorage.setItem('cartItems', JSON.stringify(cartItems));
+      }
+    }
+    else{
+      alert("Tickets you entered is not available")
+    }
   }
   },
   getters: {
     getMovies_Data(state){
-      // console.log("Moviess in geeter==>",state.moviesArray);
       return state.moviesArray;
     }, 
     get_user_admin_pannel(state)
     {
       return state.admin.all_User;
     }, 
-    // getUserTicketsMsg(state)
-    // {
-    //   console.log("hello==>")
-    //   console.log("user tickets msge in getters===>", state.user.userTicketsMsg);
-    //   return state.user.userTicketsMsg;
-    // }
   },
  
 })

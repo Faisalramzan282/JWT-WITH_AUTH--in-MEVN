@@ -12,11 +12,16 @@ const port = process.env.PORT || 3000;
 app.set('secretKey', 'nodeRestApi'); // jwt secret token
 require('dotenv').config(); //for accessing env files 
 //for configure the userCart, product cart comming in local Storage 
-const fs = require('fs');
-const path = require('path');
-const PRODUCT_DATA_FILE = path.join(__dirname, 'server-product-data.json');
-const CART_DATA_FILE = path.join(__dirname, 'server-cart-data.json');
-
+// const fs = require('fs');
+// const path = require('path');
+// const PRODUCT_DATA_FILE = path.join(__dirname, 'server-product-data.json');
+// const CART_DATA_FILE = path.join(__dirname, 'server-cart-data.json');
+// app.use((req, res, next) => {
+//   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate'); // nothing store in the web cache 
+//   res.setHeader('Pragma', 'no-cache');
+//   res.setHeader('Expires', '0');
+//   next();
+// });
 //for successful connection 
 mongoose
     .connect(process.env.MONGO_URI, {

@@ -14,9 +14,9 @@
       />
     </div>
   </nav>
-   <!-- Roles whaether of admin , user, moderator -->
-   <div>
-      <router-link to="/adminPannel">Update Roles</router-link>
+   <!-- Roles whaether of admin  -->
+   <div class="m-5">
+      <router-link to="/adminPannel" class="p-4 bg-gray-500	rounded">Update Roles</router-link>
    </div>
   <!-- Movie Form -->
   <div class="container mx-auto p-8">
@@ -48,25 +48,30 @@
         required
         class="w-full p-2 border rounded focus:outline-none focus:border-blue-400"
       />
+      <label for="moviePrice" class="block font-semibold mb-2">Price</label>
+      <input
+        type="number"
+        id="moviePrice"
+        v-model="moviesData.moviePrice"
+        required
+        class="w-full p-2 border rounded focus:outline-none focus:border-blue-400"
+      />
       <button  type="submit" class="mt-4 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Submit</button>
     </form>
   </div>
-   <!-- <p>{{ fetchMovies }}</p> -->
   <!-- Movie List -->
   <div class="container mx-auto p-8">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-     
-        <!-- listing the movies -->
-        <div
+      <div
         v-for="movie in fetchMovies"
         :key="movie._id"
         class="max-w-sm mx-auto bg-white rounded shadow p-6"
       >
         <img src="../assets/moviesImg.jpg" alt="movie-Image">
         <h2 class="text-xl font-semibold">Movie Name: {{ movie.movieName }}</h2>
-        <p class="text-gray-600">Release Date: {{ movie.releaseDate }}</p>
+        <p class="text-gray-600">Release Date: {{ formatDate(movie.releaseDate)}}</p>
         <p>Available tickets: {{ movie.tickets }}</p>
-        
+        <p>Movie Price: {{ movie.moviePrice }}</p>
         <!-- Buttons Wrapper -->
         <div class="mt-4">
           <button @click="showEditMoviesPopup(movie)" class="p-2 bg-slate-300 text-white rounded-md hover:bg-blue-600 focus:outline-none">Edit</button>
@@ -75,20 +80,14 @@
         <button @click="deleteMovie(movie)" class="p-2 bg-slate-300 text-white rounded-md bg-red-400 focus:outline-none">Delete</button>
         </div>
     </div>
-      
     </div>
   </div>
- 
-
   </div>
 </template>
-
 <script>
 import { mapActions, mapGetters } from "vuex";
 import EditMoviesPopUp from './EditMoviesPopUp.vue';
 import UpdatePassword from './UpdatePassword.vue';
-
-
 export default {
   name: "MoviesPage",
   components:{
@@ -103,9 +102,9 @@ export default {
       moviesData: {
         movieName: "",
         releaseDate: "",
-        tickets: null
+        tickets: null,
+        moviePrice: null
       },
-      // selectedRole: ''
     };
   },
   computed: {
@@ -113,25 +112,24 @@ export default {
   },
   methods: {
     ...mapActions({ moviesCreation: "moviesCreation", getMovies: "getMovies", deleteMov: "deleteMov", delete_User: "delete_User", role_selection : "role_selection"}),
-    //for getting the movies of all lists
     async submitForm() {
-      // console.log("movies creation payload in component===>", this.moviesData);
-
-      await this.moviesCreation(this.moviesData);
-      // // Fetch the movies after creation
-      this.getMovies(); 
+     const dateFormat = new Date(this.moviesData.releaseDate)
+     this.moviesData.releaseDate = dateFormat.toLocaleDateString();
+     await this.moviesCreation(this.moviesData);
+    this.moviesData.movieName = '';
+    this.moviesData.releaseDate = '';
+    this.moviesData.tickets = null;
+    this.moviesData.moviePrice = null; 
+    this.getMovies(); 
     },
     loginpge(){
         this.$router.push('/login');
     }, 
     deleteMovie(movie){
-        // console.log("Movie key is ==>", movie);
-        //key for deleting
         this.deleteMov(movie)
     },
-    //for updation of password
+    //for updation of  profile e.g username and password
     showEditMoviesPopup(movie) {
-        // console.log("Movies in the page==?", movie)
         this.selectedMovie = movie;
         this.isPopupVisible = true;
       },
@@ -142,14 +140,11 @@ export default {
         await this.delete_User();
         this.$router.push({name: 'login'});
       }, 
-      // async submitRoleForm(){
-      //  await  this.role_selection(this.selectedRole);
-      //   //  console.log("selected role is ===>", this.selectedRole);
-      //   this.selectedRole = ''
-      // }
-      
+      formatDate(dateString) {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  }  
   },
-  
   created() {
     this.getMovies();
   },

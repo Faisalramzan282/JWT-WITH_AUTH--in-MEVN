@@ -16,6 +16,10 @@ const MovieSchema = new Schema({
   type: Number,
   required: true, 
   min : 1
+},
+moviePrice:{
+  type: Number,
+  required: true
 }
 });
 module.exports = mongoose.model('Movie', MovieSchema)

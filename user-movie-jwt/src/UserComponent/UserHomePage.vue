@@ -1,67 +1,67 @@
 <template>
   <div>
-    <nav class="bg-slate-950 text-white">
-      Favourite cart
-    </nav>
-    <div class="container mx-auto p-8">
+    <span>{{ cartItem }}</span>
+    <div class="bg-slate-950 text-white p-3 m-2">
+      <button @click="cartItembtnPopUp = true">Cart</button>
+      <cartItempopUp v-show="cartItembtnPopUp" @close="cartItembtnPopUp=false"
+      />
+    </div>
+    <div class="container mx-cartItemauto p-8">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-
         <!-- listing the movies -->
-        <div v-for="movie in fetchMovies" :key="movie._id" class="max-w-sm mx-auto bg-white rounded shadow p-6">
+        <div v-for="movie in fetchMovies" :key="movie._id" class=" mx-auto bg-white rounded shadow p-6">
           <img src="../assets/moviesImg.jpg" alt="movie-Image">
           <h2 class="text-xl font-semibold">Movie Name: {{ movie.movieName }}</h2>
-          <p class="text-gray-600">Release Date: {{ movie.releaseDate }}</p>
+          <p class="text-gray-600">Release Date: {{ formatDate(movie.releaseDate) }}</p>
           <p>Available tickets: {{ movie.tickets }}</p>
+          <p>Price : {{ movie.moviePrice }}</p>
           <!-- Buttons Wrapper -->
           <div class="flex flex-col">
-            <!-- <button class="bg-slate-950	p-3 text-white mb-3 ">Add to cart</button> -->
-           <button @click="tickets(movie)"  class="bg-slate-950	p-3 text-white">Buy Tickets</button>
-           <TicketsPopUp  v-show="buyTicketsPopUp" :movieDetail="selectedMovie" @close="closePopup"/>
+            <button @click="cartBtn(movie)" class="bg-slate-950	p-3 text-white">Add To Cart</button>
+            <AddToCartPopup v-show="buyTicketsPopUp" :movieDetail="selectedMovie" @close="closePopup" />
           </div>
         </div>
       </div>
     </div>
-
   </div>
 </template>
-
 <script>
-import TicketsPopUp from './BuyTicketsPopUp.vue'
+import AddToCartPopup from './AddToCartPopUp.vue';
+import cartItempopUp from './CartItemPopUp.vue'
 import { mapActions, mapGetters } from 'vuex';
 export default {
   name: "UserHomePage",
-  components:{
-    TicketsPopUp
-
+  components: {
+    AddToCartPopup,
+    cartItempopUp
   },
-  data(){
+  data() {
     return {
       buyTicketsPopUp: false,
-      selectedMovie : null,
-      // checkobj:{
-      //   name: "fisal",
-      //   age: 12
-      // }
+      selectedMovie: null,
+      cartItembtnPopUp: false
     }
   },
   computed: {
-    ...mapGetters({ fetchMovies: "getMovies_Data" }),
-  },
+    ...mapGetters({ fetchMovies: "getMovies_Data" }),  
+  
+},
   methods: {
     ...mapActions({ getMovies: "getMovies" }),
     closePopup() {
       this.buyTicketsPopUp = false;
-       },
-    tickets(movie)
-    {
-      this.selectedMovie = movie
-      // console.log("Movie Detail is ===>",this.selectedMovie);
-      this.buyTicketsPopUp = true ;
-    
-    }
+    },
+    cartBtn(movie) {
+      this.selectedMovie = movie;
+      this.buyTicketsPopUp = true;
+    },
+    formatDate(dateString) {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString(undefined, options);
+    },
   },
   created() {
     this.getMovies();
-  }
+  },
 }
 </script>

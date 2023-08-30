@@ -19,7 +19,7 @@ const routes = [
         next()
       }
       else{
-        next('/login')
+        next('/unauthorize')
       }
      }
   },
@@ -46,33 +46,28 @@ const routes = [
     path: '/movies',
     name: 'movies',
     component: MoviesPageView,
-    // meta: { requiresAuth: true }
-  }, 
+    beforeEnter: (to, from, next) => {
+      if(store.state.user.tokens)
+      {
+        next()
+      }
+      else{
+        next('/unauthorize')
+      }
+     }  }, 
   {
     path: '/user',
     name: 'user',
     component: UserHomePage,
-    meta: {
-      requiresAuth: true 
-    },
-    // beforeEnter: (to, from, next) => {
-    //   const user_roles = store.state.user.roles_Store;
-    //   const user_tokens = store.state.user.tokens;
-    //   // console.log("checking user roles", user_roles);
-    //   // console.log("tokens in store router configuration ===>", store.state.user.tokens)
-    //   // console.log("Matched requiresAuth:", to.matched.some(record => record.meta.requiresAuth));
-    //   // console.log("Route Name:", to.name);
-
-    //   if (to.matched.some(record => record.meta.requiresAuth) && user_roles === 'user'
-    //    && user_tokens
-    //   ) {
-    //     console.log("inside block of if");
-    //     next();
-    //   } else {
-    //     console.log("inside block of else");
-    //     next('/unauthorize'); // Redirect to an unauthorized route if access is denied
-    //   }
-    // }
+    beforeEnter: (to, from, next) => {
+      if(store.state.user.tokens)
+      {
+        next()
+      }
+      else{
+        next('/unauthorize')
+      }
+     }  
   }, 
   {
     path: '/moderator',

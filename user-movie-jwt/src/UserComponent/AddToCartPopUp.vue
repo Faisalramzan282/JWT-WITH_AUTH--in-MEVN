@@ -13,13 +13,14 @@
              <button @click="confirmBtn" class="bg-slate-950 p-3 text-white mr-2">Confirm</button>
              <button class="bg-slate-950 p-3 text-white" @click="closePopUp">Close</button>
         </div>
-        
+          
       </div>
     </div>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex';
+import { provide } from 'vue';
 export default{
   props: {
     movieDetail: {
@@ -29,28 +30,27 @@ export default{
   },
   data(){
     return{
-        no_of_tickets: 1
+        no_of_tickets: 1,
+        cartsPayload : null
     }
   },
   computed: mapState({
     
     userTicketsMsg: state => state.user.userTicketsMsg,
+  
+   
   }),
     methods:{
        ...mapActions({createCart: 'create_user_cart_info'}),
       //  ...mapGetters({user_tickets_msg:" getUserTicketsMsg"}),
-       async confirmBtn(){
+        async confirmBtn(){
           const payload = {
             ...this.movieDetail,
-            tickets : this.no_of_tickets
+            userTickets : this.no_of_tickets
           }
-          // console.log("props is of movie Detail==>", this.movieDetail);
-          // console.log("no of tickets in particular movie===>", this.no_of_tickets);
-          // console.log("complete payload in my comp===>", payload);
+          this.cartsPayload = payload; //payload send to cartItemPopUp
+          provide('cartsPayload', this.cartsPayload);
           await this.createCart(payload);
-          // console.log("user tickets messge is ===>", this. userTicketsMsg);
-         
-          alert(this. userTicketsMsg);
           this.$emit('close');
           this.no_of_tickets = 1;
         },
@@ -58,10 +58,7 @@ export default{
             this.$emit('close')
         },
     }, 
-//   created() {
-//       // console.log("movieDetail prop in TicketsPopUp:", this.movieDetail);
-//      this.user_tickets_msg();
-// }
+  
 }
 
 </script>

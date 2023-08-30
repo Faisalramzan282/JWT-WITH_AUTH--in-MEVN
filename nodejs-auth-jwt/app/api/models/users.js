@@ -19,13 +19,9 @@ const UserSchema = new Schema({
   trim: true,
   required: true
  },
-//  profileImage:{
-//     data: Buffer,    
-//     contentType: String,
-//  }
+
 role: { type: String, enum: ['user', 'admin'], default: 'user'}
 });
-// hash user password before saving into database
 UserSchema.pre('save', function(next){
 this.password = bcrypt.hashSync(this.password, saltRounds);
 next();

@@ -44,17 +44,14 @@ const deleteById = async (req, res, next) => {
     next(error);
   }
 };
-
 const create = async (req, res, next) => {
   try {
-    const response = await movieModel.create({movieName: req.body.movieName, releaseDate: req.body.releaseDate, tickets:req.body.tickets });
-    // console.log("Schema created in seerver==>", response);
+    const response = await movieModel.create({movieName: req.body.movieName, releaseDate: req.body.releaseDate, tickets:req.body.tickets, moviePrice: req.body.moviePrice });
     res.json({ status: "success", message: "Movie added successfully!!!", data: null });
   } catch (error) {
     next(error);
   }
 };
-
 module.exports = {
   getById,
   getAll,

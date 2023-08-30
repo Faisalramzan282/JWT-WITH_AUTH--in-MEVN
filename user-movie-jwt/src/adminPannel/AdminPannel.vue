@@ -1,12 +1,23 @@
 <template>
-  <div>
-    <p>Admin Pannel</p>
+  <div class="bg-zinc-400 ">
+    <div class="">
+      <p>Admin Pannel</p>
+    </div>
     <div>
-      <ul>
+      
+         <div class="m-5 flex justify-around relative">
+           <p>ID</p>
+           <p>Current Role</p>
+           <p>username</p>
+          <p>Change Role</p>
+         </div>
+          
+         <ul>
         <li v-for="user in fetchAllUser[0]" :key="user._id">
-          <div class="border-solid border-2 border-sky-500 m-2">
-            <p>User_id: {{ user._id }}</p>
-            <p>User Role is: {{ user.role }}</p>
+          <div class="m-5 flex justify-around">
+            <p>{{ user._id }}</p>
+            <p>{{ user.role }}</p>
+            <p>{{ user.username }}</p>
             <div>
               <button
                 class="bg-slate-300 p-2 rounded"
@@ -29,9 +40,6 @@ export default {
   computed: {
     ...mapGetters({ fetchAllUser: "get_user_admin_pannel" }),
   },
-  data() {
-    return {};
-  },
   methods: {
     ...mapActions({
       fetchUser: "fetchAllUsers",
@@ -47,10 +55,7 @@ export default {
         id: user._id,
         role: user.role,
       };
-      // console.log("selected key is ==>", user._id);
-      // console.log("selected Role is ===>", user.role);
       await this.role_selection(userInfo);
-      // this.selectedRole = ''
     },
   },
   created() {
