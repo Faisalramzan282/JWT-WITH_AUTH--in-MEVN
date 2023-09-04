@@ -1,28 +1,14 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const userController = require('../app/api/controllers/users');
-// for imaging binary saving 
-const multer = require('multer');
+const userController = require("../app/api/controllers/users");
+const multer = require("multer");
 const upload = multer();
 
-router.post('/register', 
-// function validate(req, res) {
-//   console.log("request existed in middlware", req.body);
-//     if (req.file) {
-//       req.body.selectedImage = {
-//         data: req.file.buffer,
-//         contentType: req.file.mimetype,
-//       };
-//     }
-    userController.create
-//   }
-  )
-
-router.get('/register', userController.getUser);
-router.post('/authenticate', userController.authenticate);
-// router.get('/authenticate', userController.getAuthenticate)
-router.patch('/register/:userId', userController.updatePasswordById);
-router.delete('/register/:userId', userController.deleteUserById)
+router.post("/register",userController.create);
+router.get("/register", userController.getUser);
+router.post("/authenticate", userController.authenticate);
+router.patch("/register/:userId", userController.updatePasswordById);
+router.delete("/register/:userId", userController.deleteUserById);
 // user role authentication
-router.patch('/role/:userId', userController.updateRoles);
+router.patch("/role/:userId", userController.updateRoles);
 module.exports = router;

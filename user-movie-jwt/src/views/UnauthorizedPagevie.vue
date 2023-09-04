@@ -1,13 +1,13 @@
 <template>
     <div>
-       <UnauthorizedPage />
+        <UnauthorizedPage />
     </div>
 </template>
 <script>
 import UnauthorizedPage from '@/UserComponent/UnauthorizedPage.vue';
-export default{
-    name : "UnauthPageView",
-    components:{
+export default {
+    name: "UnauthPageView",
+    components: {
         UnauthorizedPage
     }
 }

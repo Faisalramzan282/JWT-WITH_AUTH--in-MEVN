@@ -11,18 +11,6 @@ const app = express();
 const port = process.env.PORT || 3000; 
 app.set('secretKey', 'nodeRestApi'); // jwt secret token
 require('dotenv').config(); //for accessing env files 
-//for configure the userCart, product cart comming in local Storage 
-// const fs = require('fs');
-// const path = require('path');
-// const PRODUCT_DATA_FILE = path.join(__dirname, 'server-product-data.json');
-// const CART_DATA_FILE = path.join(__dirname, 'server-cart-data.json');
-// app.use((req, res, next) => {
-//   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate'); // nothing store in the web cache 
-//   res.setHeader('Pragma', 'no-cache');
-//   res.setHeader('Expires', '0');
-//   next();
-// });
-//for successful connection 
 mongoose
     .connect(process.env.MONGO_URI, {
         useNewUrlParser: true,
@@ -49,22 +37,13 @@ app.get('/favicon.ico', function(req, res) {
     res.sendStatus(204);
 });
 function validateUser(req, res, next){
-  // console.log("access-Token in movies server ==>", req.headers['x-access-token']);   //for accessing tokens in the front-end validation
-  // console.log("respond in movies server==>", res)
-  // console.log(" keysecret in movies server ==>",req.app.get('secretKey')); 
-  // console.log("JWT is ==>", jwt);
-  // console.log("Schema created in seerver==>", req.body.movieName, req.body.releaseDate);
-
   jwt.verify(req.headers['x-access-token'], req.app.get('secretKey'), function(err, decoded) {
     if (err) {
       res.json({status:"Error in authentication", message: err.message, data:null});
     }else{
-      // add user id to request
-      // req.body.userId = decoded.id;
       next();
     }
   });
-  
 }
 app.use(function(req, res, next) {
  let err = new Error('Not Foundssssss');
@@ -72,8 +51,7 @@ app.use(function(req, res, next) {
     next(err);
 });
 app.use(function(err, req, res, next) {
- console.log(err);
- 
+  console.log(err);
   if(err.status === 404)
    res.status(404).json({message: "Not found"});
   else 

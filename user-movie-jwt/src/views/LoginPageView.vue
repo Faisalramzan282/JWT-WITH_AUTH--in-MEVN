@@ -1,15 +1,13 @@
 <template>
-    <div>
+  <div>
     <LoginPage />
-    </div>
+  </div>
 </template>
-
 <script>
 import LoginPage from '@/components/LoginPage.vue'
-
 export default {
   name: 'LoginPageView',
-  components:{
+  components: {
     LoginPage
   }
 }

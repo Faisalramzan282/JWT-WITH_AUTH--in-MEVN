@@ -10,8 +10,6 @@ const getById = async (req, res, next) => {
 };
 
 const getAll = async (req, res) => {
- console.log("request in getMovies API ====> ",  req);
- console.log("request in getMovies API ====> ",  res);
   try {
     const allMovies = await movieModel.find(); // Assuming find() fetches all movies
     res.json(allMovies); // Send the movies data as JSON response
@@ -23,8 +21,6 @@ const getAll = async (req, res) => {
 
 const updateById = async (req, res, next) => {
   try {
-    console.log("Movie Upation in server", req);
-    // console.log("Movie Upation in server", req.body.name);
     await movieModel.findByIdAndUpdate(req.params.movieId, {
       movieName: req.body.movieName,
       releaseDate: req.body.releaseDate
@@ -34,10 +30,8 @@ const updateById = async (req, res, next) => {
     next(error);
   }
 };
-
 const deleteById = async (req, res, next) => {
   try {
-    console.log("Deleting iD is ===>", req.params.movieId);
     await movieModel.findByIdAndRemove(req.params.movieId);
     res.json({ status: "success", message: "Movie deleted successfully!!!", data: null });
   } catch (error) {

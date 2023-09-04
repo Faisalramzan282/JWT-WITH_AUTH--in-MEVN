@@ -1,16 +1,14 @@
 <template>
     <div>
-       <AdminPannel />
+        <AdminPannel />
     </div>
 </template>
-
 <script>
 import AdminPannel from "@/adminPannel/AdminPannel.vue"
 export default {
-    name : "AdminPannelView",
-    components:{
-            AdminPannel
-
+    name: "AdminPannelView",
+    components: {
+        AdminPannel
     }
 }
 </script>

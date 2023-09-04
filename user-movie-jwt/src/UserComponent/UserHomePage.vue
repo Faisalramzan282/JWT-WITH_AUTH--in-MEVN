@@ -1,6 +1,5 @@
 <template>
   <div>
-    <span>{{ cartItem }}</span>
     <div class="bg-slate-950 text-white p-3 m-2">
       <button @click="cartItembtnPopUp = true">Cart</button>
       <cartItempopUp v-show="cartItembtnPopUp" @close="cartItembtnPopUp=false"
@@ -18,7 +17,7 @@
           <!-- Buttons Wrapper -->
           <div class="flex flex-col">
             <button @click="cartBtn(movie)" class="bg-slate-950	p-3 text-white">Add To Cart</button>
-            <AddToCartPopup v-show="buyTicketsPopUp" :movieDetail="selectedMovie" @close="closePopup" />
+            <AddToCartPopup v-show="addCartPopUp" :movieDetail="selectedMovie" @close="closePopup"/>
           </div>
         </div>
       </div>
@@ -37,23 +36,26 @@ export default {
   },
   data() {
     return {
-      buyTicketsPopUp: false,
+      addCartPopUp: false,
       selectedMovie: null,
-      cartItembtnPopUp: false
+      cartItembtnPopUp: false,
     }
   },
   computed: {
-    ...mapGetters({ fetchMovies: "getMovies_Data" }),  
-  
+    ...mapGetters({ fetchMovies: "movies/getMovies_Data" }),
 },
   methods: {
-    ...mapActions({ getMovies: "getMovies" }),
+    ...mapActions({ getMovies: "movies/getMovies" }),
     closePopup() {
-      this.buyTicketsPopUp = false;
+      this.addCartPopUp = false;
     },
-    cartBtn(movie) {
+    cartBtn(movie) 
+    { 
+      movie = {
+        ...movie,
+      }
       this.selectedMovie = movie;
-      this.buyTicketsPopUp = true;
+      this.addCartPopUp = true;
     },
     formatDate(dateString) {
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -62,6 +64,7 @@ export default {
   },
   created() {
     this.getMovies();
+   
   },
 }
 </script>

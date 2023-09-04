@@ -3,9 +3,9 @@ import SignUpPage from '../views/SignUpPageView.vue'
 import LoginPageView from '../views/LoginPageView.vue';
 import MoviesPageView from '../views/MoviesPageView.vue'
 import UserHomePage from '../views/UserHomePageview.vue'
-import ModeratorHome from '../views/ModeratorHomeView.vue'
 import UnauthorizedPage from '../views/UnauthorizedPagevie.vue'
 import AdminPannel from '../views/AdminPannelView.vue'
+import OrderMoviesView from '../views/OrderMoviesview.vue'
 import store from '@/store';
 const routes = [
   {
@@ -13,8 +13,8 @@ const routes = [
      path: '/adminPannel',
      name : 'adminPannel',
      component: AdminPannel, 
-     beforeEnter: (to, from, next) => {
-      if(store.state.user.tokens)
+    beforeEnter: (to, from, next) => {
+      if(store.state.user.user.tokens)
       {
         next()
       }
@@ -47,7 +47,7 @@ const routes = [
     name: 'movies',
     component: MoviesPageView,
     beforeEnter: (to, from, next) => {
-      if(store.state.user.tokens)
+      if(store.state.user.user.tokens)
       {
         next()
       }
@@ -58,21 +58,31 @@ const routes = [
   {
     path: '/user',
     name: 'user',
+    // redirect: '/user/order',
     component: UserHomePage,
     beforeEnter: (to, from, next) => {
-      if(store.state.user.tokens)
+      if(store.state.user.user.tokens)
       {
         next()
       }
       else{
         next('/unauthorize')
       }
-     }  
+     },
   }, 
   {
-    path: '/moderator',
-    name : 'moderator',
-    component: ModeratorHome
+    path: '/user/order',
+    name: 'order',
+    component: OrderMoviesView,
+    beforeEnter: (to, from, next) => {
+      if(store.state.user.user.tokens)
+      {
+        next()
+      }
+      else{
+        next('/unauthorize')
+      }
+     },
   }
 ]
 
@@ -80,24 +90,4 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
-
-// router.beforeEach((to, from, next) => {
-//   const user_roles = store.state.user.roles_Store;
-//   console.log("checking user roles", user_roles);
-
-//   console.log("Matched requiresAuth:", to.matched.some(record => record.meta.requiresAuth));
-//   console.log("Route Name:", to.name);
-
-//   if (to.matched.some(record => record.meta.requiresAuth) && user_roles === 'user') {
-//     console.log("inside block of if");
-//     next({
-//       name: "user",
-//     });
-//   } else {
-//     console.log("inside block of else");
-//     next();
-//   }
-// });
-
-
 export default router
